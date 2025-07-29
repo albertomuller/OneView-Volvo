@@ -1,0 +1,74 @@
+# Azure DevOps Pipeline for Volvo OneView Static Web App
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+- stage: Build
+  displayName: 'Build and Deploy'
+  jobs:
+  - job: BuildAndDeploy
+    displayName: 'Build and Deploy Job'
+    steps:
+    - checkout: self
+      displayName: 'Checkout Repository'
+      
+    - task: NodeTool@0
+      displayName: 'Install Node.js'
+      inputs:
+        versionSpec: '18.x'
+        
+    - script: |
+        echo "Preparing static files for deployment..."
+        ls -la
+      displayName: 'List files'
+      
+    - task: CopyFiles@2
+      displayName: 'Copy Files to Staging'
+      inputs:
+        SourceFolder: '$(Build.SourcesDirectory)'
+        Contents: |
+          index.html
+          one-page-login-alberto-v3.html
+          one-pagealberto-index-v3.html
+          staticwebapp.config.json
+          package.json
+          README.md
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'volvo-oneview-app'
+        publishLocation: 'Container'
+
+- stage: Deploy
+  displayName: 'Deploy to Azure Static Web App'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: DeployToAzure
+    displayName: 'Deploy to Azure Static Web App'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: 'volvo-oneview-app'
+            displayName: 'Download Build Artifacts'
+            
+          - task: AzureStaticWebApp@0
+            displayName: 'Deploy to Azure Static Web App'
+            inputs:
+              app_location: '$(Pipeline.Workspace)/volvo-oneview-app'
+              api_location: ''
+              output_location: ''
+              azure_static_web_apps_api_token: '$(AZURE_STATIC_WEB_APPS_API_TOKEN)'
+              skip_build: true
