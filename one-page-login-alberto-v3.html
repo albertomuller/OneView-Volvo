@@ -1,0 +1,738 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volvo OneView - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Volvo+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Nova paleta minimalista baseada no index.html */
+            --primary-dark: #2D606F;    /* Flow - dark teal */
+            --primary: #396976;         /* Flow One - medium teal */
+            --primary-light: #678C96;   /* Flow Two - light teal */
+            --primary-lighter: #96B0B6; /* Flow Three - lighter teal */
+            --secondary: #C3D2D6;       /* Flow Four - very light teal */
+            
+            --background: #FAFBFB;      /* Clean white background */
+            --surface: #FFFFFF;         /* Pure white for cards */
+            --surface-alt: #F7F9F9;     /* Subtle gray for sections */
+            --border: #E8EDEF;          /* Soft border color */
+            --text-primary: #1A2B2F;    /* Dark text */
+            --text-secondary: #4A5E65;  /* Medium text */
+            --text-muted: #7A8B91;      /* Light text */
+            
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: var(--background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(45, 96, 111, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(57, 105, 118, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .login-container {
+            background: var(--surface);
+            border-radius: 8px;
+            box-shadow: 
+                0 4px 12px rgba(45, 96, 111, 0.1),
+                0 2px 4px rgba(45, 96, 111, 0.05);
+            width: 100%;
+            max-width: 480px;
+            padding: 3.5rem 3rem;
+            position: relative;
+            border: 1px solid var(--border);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            inset: -12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.1); opacity: 0.15; }
+        }
+
+        .logo-section img {
+            width: 88px;
+            height: 88px;
+            filter: drop-shadow(0 4px 8px rgba(45, 96, 111, 0.15));
+            transition: transform 0.3s ease;
+        }
+
+        .logo-section img:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-section h1 {
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0;
+            letter-spacing: -0.02em;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .logo-section .brand-divider {
+            width: 80px;
+            height: 3px;
+            background: var(--primary);
+            margin: 1.5rem auto;
+            border-radius: 2px;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .welcome-section h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 0.75rem 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .welcome-section p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .form-container {
+            margin-bottom: 2.5rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.75rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1.25rem 1.25rem 1.25rem 3.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1.1rem;
+            background: var(--surface);
+            transition: all 0.15s ease;
+            outline: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-field::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(57, 105, 118, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .input-field:focus + .input-icon {
+            color: var(--primary);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 1.25rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 4px 12px rgba(45, 96, 111, 0.2),
+                0 2px 4px rgba(45, 96, 111, 0.1);
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.02em;
+        }
+
+        .login-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .login-button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            background-color: var(--primary-dark);
+            box-shadow: 
+                0 6px 16px rgba(45, 96, 111, 0.3),
+                0 3px 6px rgba(45, 96, 111, 0.15);
+        }
+
+        .login-button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .login-button:active {
+            transform: translateY(-1px);
+        }
+
+        .login-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            border: 1px solid;
+            font-weight: 500;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: var(--error);
+            border-color: #fecaca;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            color: var(--success);
+            border-color: #bbf7d0;
+        }
+
+        .security-info {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--surface-alt);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .security-info i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid var(--volvo-white);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-right: 0.75rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .developer-credit {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: right;
+            line-height: 1.4;
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .developer-credit strong {
+            color: var(--primary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .login-container {
+                margin: 1rem;
+                padding: 2.5rem 2rem;
+                max-width: calc(100vw - 2rem);
+            }
+
+            .logo-section h1 {
+                font-size: 2.25rem;
+            }
+
+            .welcome-section h2 {
+                font-size: 1.2rem;
+            }
+
+            .input-field {
+                padding: 1rem 1rem 1rem 3rem;
+                font-size: 1rem;
+            }
+
+            .login-button {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            .developer-credit {
+                bottom: 1rem;
+                right: 1rem;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-section img {
+                width: 72px;
+                height: 72px;
+            }
+
+            .logo-section h1 {
+                font-size: 2rem;
+            }
+
+            .brand-divider {
+                width: 60px !important;
+            }
+        }
+
+        /* Enhanced accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus indicators for accessibility */
+        .login-button:focus-visible,
+        .input-field:focus-visible {
+            outline: 3px solid var(--volvo-accent);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Volvo-Iron-Mark-Black.svg" alt="Volvo Group Logo">
+            </div>
+            <h1>Volvo OneView</h1>
+            <div class="brand-divider"></div>
+        </div>
+
+        <div class="welcome-section">
+            <h2>Strategic Command Center</h2>
+            <p>Enterprise Intelligence & Portfolio Management</p>
+        </div>
+
+        <div class="form-container">
+            <div id="errorMessage" class="message error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText">Authentication failed. Please verify your credentials.</span>
+            </div>
+
+            <div id="successMessage" class="message success-message">
+                <i class="fas fa-check-circle"></i>
+                <span id="successText">Authentication successful! Redirecting to dashboard...</span>
+            </div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="text" id="username" class="input-field" placeholder="Corporate Username" required autocomplete="username">
+                    <i class="fas fa-user input-icon"></i>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" id="password" class="input-field" placeholder="Password" required autocomplete="current-password">
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
+
+                <button type="submit" id="loginButton" class="login-button">
+                    <span id="loginButtonText" class="flex items-center justify-center">
+                        <i class="fas fa-sign-in-alt" style="margin-right: 0.75rem;"></i>
+                        Access Dashboard
+                    </span>
+                    <span id="loginButtonLoading" class="hidden flex items-center justify-center">
+                        <div class="loading-spinner"></div>
+                        Authenticating...
+                    </span>
+                </button>
+            </form>
+        </div>
+
+        <div class="security-info">
+            <i class="fas fa-shield-alt"></i>
+            <span>Secure connection protected by Volvo Group IT Security</span>
+        </div>
+    </div>
+
+    <div class="developer-credit">
+        <div>Enterprise Solution by</div>
+        <div><strong>Alberto Müller</strong></div>
+        <div>DPM LATAM • Volvo Group</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMsY_-99HnTcTooIEAhGpriRLJA-l8evA",
+            authDomain: "onepage-vfs.firebaseapp.com",
+            projectId: "onepage-vfs",
+            storageBucket: "onepage-vfs.firebasestorage.app",
+            messagingSenderId: "357247060145",
+            appId: "1:357247060145:web:7af2c27072e1d158b03a90"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // DOM elements
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const loginButton = document.getElementById('loginButton');
+        const loginButtonText = document.getElementById('loginButtonText');
+        const loginButtonLoading = document.getElementById('loginButtonLoading');
+        const errorText = document.getElementById('errorText');
+        const successText = document.getElementById('successText');
+
+        // Local credential verification (fallback when Firebase is unavailable)
+        const localCredentials = {
+            "VFSDITLATAM": {
+                password: "Vfsalberto2025",
+                name: "VFS DIT LATAM User"
+            }
+        };
+
+        // Initialize user credentials in Firestore if they don't exist
+        async function initializeUserCredentials() {
+            try {
+                const userDocRef = doc(db, "auth", "users");
+                const userDoc = await getDoc(userDocRef);
+                
+                if (!userDoc.exists()) {
+                    // Create initial user credentials
+                    await setDoc(userDocRef, {
+                        credentials: localCredentials,
+                        lastUpdated: new Date().toISOString()
+                    });
+                    console.log("User credentials initialized in Firestore");
+                }
+            } catch (error) {
+                console.log("Firebase unavailable, using local authentication");
+            }
+        }
+
+        // Verify user credentials against Firestore with local fallback
+        async function verifyCredentials(username, password) {
+            // First try Firebase if available
+            try {
+                const userDocRef = doc(db, "auth", "users");
+                const userDoc = await getDoc(userDocRef);
+                
+                if (userDoc.exists()) {
+                    const credentials = userDoc.data().credentials;
+                    if (credentials[username] && credentials[username].password === password) {
+                        return {
+                            success: true,
+                            user: {
+                                username: username,
+                                name: credentials[username].name || username
+                            }
+                        };
+                    }
+                }
+                return { success: false, error: "Invalid credentials. Please check your username and password." };
+            } catch (error) {
+                console.log("Firebase unavailable, using local authentication");
+                
+                // Fallback to local credential verification
+                if (localCredentials[username] && localCredentials[username].password === password) {
+                    return {
+                        success: true,
+                        user: {
+                            username: username,
+                            name: localCredentials[username].name || username
+                        }
+                    };
+                }
+                return { success: false, error: "Invalid credentials. Please check your username and password." };
+            }
+        }
+
+        // Store authentication session
+        async function storeAuthSession(user) {
+            const sessionData = {
+                username: user.username,
+                name: user.name,
+                loginTime: new Date().toISOString(),
+                isAuthenticated: true,
+                expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
+            };
+            
+            // Always store in localStorage first
+            try {
+                localStorage.setItem('volvo_oneview_session', JSON.stringify(sessionData));
+                console.log("Session stored in localStorage:", sessionData);
+            } catch (error) {
+                console.error("Error storing session in localStorage:", error);
+                throw new Error("Failed to store session locally");
+            }
+            
+            // Try to store in Firebase if available
+            try {
+                if (db) {
+                    const sessionDocRef = doc(db, "sessions", user.username);
+                    await setDoc(sessionDocRef, sessionData);
+                    console.log("Session also stored in Firebase");
+                }
+            } catch (error) {
+                console.log("Firebase storage failed, but localStorage worked:", error);
+            }
+            
+            return true;
+        }
+
+        // Handle form submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showError("Please fill in all required fields");
+                return;
+            }
+            
+            // Show loading state
+            setLoadingState(true);
+            hideMessages();
+            
+            try {
+                // Try to sign in anonymously to Firebase (but don't fail if it doesn't work)
+                try {
+                    await signInAnonymously(auth);
+                } catch (firebaseError) {
+                    console.log("Firebase authentication unavailable, using offline mode");
+                }
+                
+                // Verify credentials (works with or without Firebase)
+                const authResult = await verifyCredentials(username, password);
+                
+                if (authResult.success) {
+                    // Store session (try Firebase first, fallback to localStorage)
+                    await storeAuthSession(authResult.user);
+                    
+                    showSuccess("Authentication successful! Redirecting to dashboard...");
+                    console.log("Login successful, session stored, redirecting...");
+                    
+                    // Redirect to main application immediately
+                    setTimeout(() => {
+                        window.location.replace('index.html');
+                    }, 1000);
+                } else {
+                    showError(authResult.error);
+                }
+            } catch (error) {
+                console.error("Authentication error:", error);
+                showError("Authentication failed. Please try again.");
+            } finally {
+                setLoadingState(false);
+            }
+        });
+
+        // Utility functions
+        function setLoadingState(loading) {
+            loginButton.disabled = loading;
+            if (loading) {
+                loginButtonText.classList.add('hidden');
+                loginButtonLoading.classList.remove('hidden');
+            } else {
+                loginButtonText.classList.remove('hidden');
+                loginButtonLoading.classList.add('hidden');
+            }
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successText.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        // Check if already authenticated
+        function checkExistingAuth() {
+            const localSession = localStorage.getItem('volvo_oneview_session');
+            if (localSession) {
+                try {
+                    const session = JSON.parse(localSession);
+                    const now = new Date();
+                    const expires = new Date(session.expires);
+                    
+                    if (session.isAuthenticated && now < expires) {
+                        // Session is still valid
+                        showSuccess("Session found. Redirecting to dashboard...");
+                        setTimeout(() => {
+                            window.location.replace('index.html');
+                        }, 1200);
+                        return true;
+                    } else {
+                        // Session expired
+                        localStorage.removeItem('volvo_oneview_session');
+                    }
+                } catch (error) {
+                    console.error("Error checking local session:", error);
+                    localStorage.removeItem('volvo_oneview_session');
+                }
+            }
+            return false;
+        }
+
+        // Initialize
+        async function initialize() {
+            // Check existing authentication
+            const alreadyAuth = await checkExistingAuth();
+            if (alreadyAuth) return;
+            
+            // Try to initialize Firebase credentials (but don't fail if it doesn't work)
+            try {
+                await signInAnonymously(auth);
+                await initializeUserCredentials();
+            } catch (error) {
+                console.log("Firebase unavailable, using local authentication only");
+            }
+        }
+
+        // Start initialization
+        initialize();
+    </script>
+</body>
+</html>

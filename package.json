@@ -1,0 +1,12 @@
+{
+  "name": "oneview-volvo",
+  "version": "1.0.0",
+  "description": "Static HTML site for OneView Volvo",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo \"No build required for static HTML site.\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
