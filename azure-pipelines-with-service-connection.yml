@@ -1,0 +1,67 @@
+# Azure DevOps Pipeline with Service Connection for Static Web App
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  azureSubscription: 'Azure-Service-Connection' # Replace with your service connection name
+
+steps:
+- checkout: self
+  displayName: 'Checkout Repository'
+  persistCredentials: true
+
+- script: |
+    echo "Volvo OneView - Preparing for deployment"
+    echo "Current directory: $(System.DefaultWorkingDirectory)"
+    echo "Files in repository:"
+    ls -la
+  displayName: 'Display Repository Information'
+
+# Option 1: Using Azure CLI (requires Azure service connection)
+- task: AzureCLI@2
+  displayName: 'Deploy to Azure Static Web App via CLI'
+  inputs:
+    azureSubscription: '$(azureSubscription)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      echo "Deploying Volvo OneView to Azure Static Web App..."
+      
+      # Install Azure Static Web Apps CLI
+      npm install -g @azure/static-web-apps-cli
+      
+      # Deploy using SWA CLI
+      swa deploy \
+        --app-location "$(System.DefaultWorkingDirectory)" \
+        --output-location "$(System.DefaultWorkingDirectory)" \
+        --deployment-token "$(AZURE_STATIC_WEB_APPS_API_TOKEN)"
+
+# Option 2: Alternative using direct file copy and Azure CLI
+- task: CopyFiles@2
+  displayName: 'Copy Files for Deployment'
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: |
+      index.html
+      one-page-login-alberto-v3.html
+      one-pagealberto-index-v3.html
+      staticwebapp.config.json
+      package.json
+      README.md
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/app'
+    
+- script: |
+    echo "Files prepared for deployment:"
+    ls -la $(Build.ArtifactStagingDirectory)/app
+  displayName: 'Verify Deployment Files'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Build Artifacts'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'volvo-oneview-static-app'
+    publishLocation: 'Container'

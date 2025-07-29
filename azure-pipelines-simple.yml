@@ -1,0 +1,30 @@
+# Simplified Azure DevOps Pipeline for Static HTML App
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- checkout: self
+  displayName: 'Checkout source code'
+  persistCredentials: true
+
+- script: |
+    echo "Building Volvo OneView application..."
+    echo "Current directory contents:"
+    ls -la
+    echo "Working directory: $(System.DefaultWorkingDirectory)"
+  displayName: 'Display build information'
+
+- task: AzureStaticWebApp@0
+  displayName: 'Deploy to Azure Static Web App'
+  inputs:
+    app_location: '$(System.DefaultWorkingDirectory)'
+    api_location: ''
+    output_location: '$(System.DefaultWorkingDirectory)'
+    azure_static_web_apps_api_token: '$(AZURE_STATIC_WEB_APPS_API_TOKEN)'
+    skip_build: true
