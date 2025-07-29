@@ -1,4 +1,4 @@
-# Azure Pipeline for Volvo OneView
+# Azure Pipeline for Volvo OneView - Using Azure CLI for deployment
 trigger:
 - main
 
@@ -14,12 +14,24 @@ steps:
     ls -la
   displayName: 'Show Repository Contents'
 
-- task: AzureStaticWebApp@0
-  displayName: 'Build And Deploy'
+- task: NodeTool@0
   inputs:
-    app_location: '/'
-    api_location: ''
-    output_location: ''
-    azure_static_web_apps_api_token: '11be617d41b3d2c3853a5056847fa0e4e1fa47f3ad1da35e75863c69df22cc8602-4e61d4cf-638b-43cc-b73c-e0ddbb680abf00f16190d73ae90f'
-    production_branch: 'main'
-    skip_build: true
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install -g @azure/static-web-apps-cli
+  displayName: 'Install Azure Static Web Apps CLI'
+
+- task: AzureCLI@2
+  displayName: 'Deploy to Azure Static Web Apps'
+  inputs:
+    azureSubscription: 'YOUR_SERVICE_CONNECTION_NAME' # <-- IMPORTANT: Replace with your Service Connection name
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      swa deploy \
+        --app-name "Oneview-v2" \
+        --resource-group "RG-INTERNAL-APPS-PRD" \
+        --source "/" \
+        --verbose
