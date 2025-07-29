@@ -5,18 +5,14 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-variables:
-  AZURE_STATIC_WEB_APPS_API_TOKEN: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
-
 steps:
 - checkout: self
   
 - script: |
-    echo "Checking deployment token..."
-    echo "Token starts with: $(echo $AZURE_STATIC_WEB_APPS_API_TOKEN | cut -c1-10)..."
-  displayName: 'Verify Token'
-  env:
-    AZURE_STATIC_WEB_APPS_API_TOKEN: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
+    echo "Preparing Volvo OneView deployment..."
+    echo "Repository contents:"
+    ls -la
+  displayName: 'Show Repository Contents'
 
 - task: AzureStaticWebApp@0
   displayName: 'Build And Deploy'
