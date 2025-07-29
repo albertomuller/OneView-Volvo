@@ -1,4 +1,4 @@
-# Azure Pipeline for Volvo OneView - Using Azure CLI for deployment
+# Azure Pipeline for Volvo OneView - Using Service Principal for deployment
 trigger:
 - main
 
@@ -26,7 +26,8 @@ steps:
 - task: AzureCLI@2
   displayName: 'Deploy to Azure Static Web Apps'
   inputs:
-    azureSubscription: 'YOUR_SERVICE_CONNECTION_NAME' # <-- IMPORTANT: Replace with your Service Connection name
+    azureSubscription: 'YOUR_SERVICE_CONNECTION_NAME' # This will be ignored, but the task requires it.
+    addSpnToEnvironment: true # This makes the Service Principal available
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
@@ -34,4 +35,11 @@ steps:
         --app-name "Oneview-v2" \
         --resource-group "RG-INTERNAL-APPS-PRD" \
         --source "/" \
+        --tenant-id "$(AZURE_TENANT_ID)" \
+        --client-id "$(AZURE_CLIENT_ID)" \
+        --client-secret "$(AZURE_CLIENT_SECRET)" \
         --verbose
+  env:
+    AZURE_CLIENT_ID: $(SWA_CLIENT_ID)
+    AZURE_TENANT_ID: $(SWA_TENANT_ID)
+    AZURE_CLIENT_SECRET: $(SWA_CLIENT_SECRET)
